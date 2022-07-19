@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Jumbotron,
   Container,
@@ -16,37 +16,41 @@ import { GET_ME } from '../utils/queries';
 
 const SavedBooks = () => {
   const [userData, setUserData] = useState({});
-  const [deleteBook, { delete_error }] = useMutation(REMOVE_BOOK);
-
-  const { loading, UserData } = useQuery(GET_ME);
-  // const userData = await getMe(token);
-  console.log(UserData);
+  const [deleteBook, { error }] = useMutation(REMOVE_BOOK);
 
   // // use this to determine if `useEffect()` hook needs to run again
   // const userDataLength = Object.keys(userData).length;
 
-  // useQuery(() => {
-  // const getUserData = async () => {
-  // try {
-  const token = Auth.loggedIn() ? Auth.getToken() : null;
+  // use GraphQL query to get currently logged in user data
+  const { loading, UserData } = useQuery(GET_ME);
 
-  if (!token) {
-    return false;
-  }
+  useEffect(() => {
+    // const getUserData = async () => {
+    //   try {
+    //     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-  if (!UserData) {
-    throw new Error('something went wrong!');
-  }
+    //     if (!token) {
+    //       return false;
+    //     }
 
-  // const user = await response.json();
-  setUserData(UserData);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+    // const response = await getMe(token);
 
-  // getUserData();
-  // }, [userDataLength]);
+    // if (!response) {
+    //   throw new Error('something went wrong!');
+    // }
+    if (UserData) {
+      const user = UserData;
+      console.log('logged in user data used to set state' + user);
+      setUserData(user);
+    }
+
+    //   } catch (err) {
+    //     console.error(err);
+    //   }
+    // };
+
+    // getUserData();
+  }, [userData]);
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
@@ -77,50 +81,54 @@ const SavedBooks = () => {
     return <h2>LOADING...</h2>;
   }
 
-  return (
-    <>
-      <Jumbotron fluid className="text-light bg-dark">
+  if (userData) {
+    console.log(userData);
+
+    return (
+      <>
+        <Jumbotron fluid className="text-light bg-dark">
+          <Container>
+            <h1>Viewing saved books!</h1>
+          </Container>
+        </Jumbotron>
         <Container>
-          <h1>Viewing saved books!</h1>
+          <h2>
+            {userData.savedBooks.length
+              ? `Viewing ${userData.savedBooks.length} saved ${
+                  userData.savedBooks.length === 1 ? 'book' : 'books'
+                }:`
+              : 'You have no saved books!'}
+          </h2>
+          <CardColumns>
+            {userData.savedBooks.map((book) => {
+              return (
+                <Card key={book.bookId} border="dark">
+                  {book.image ? (
+                    <Card.Img
+                      src={book.image}
+                      alt={`The cover for ${book.title}`}
+                      variant="top"
+                    />
+                  ) : null}
+                  <Card.Body>
+                    <Card.Title>{book.title}</Card.Title>
+                    <p className="small">Authors: {book.authors}</p>
+                    <Card.Text>{book.description}</Card.Text>
+                    <Button
+                      className="btn-block btn-danger"
+                      onClick={() => handleDeleteBook(book.bookId)}
+                    >
+                      Delete this Book!
+                    </Button>
+                  </Card.Body>
+                </Card>
+              );
+            })}
+          </CardColumns>
         </Container>
-      </Jumbotron>
-      <Container>
-        <h2>
-          {userData.savedBooks.length
-            ? `Viewing ${userData.savedBooks.length} saved ${
-                userData.savedBooks.length === 1 ? 'book' : 'books'
-              }:`
-            : 'You have no saved books!'}
-        </h2>
-        <CardColumns>
-          {userData.savedBooks.map((book) => {
-            return (
-              <Card key={book.bookId} border="dark">
-                {book.image ? (
-                  <Card.Img
-                    src={book.image}
-                    alt={`The cover for ${book.title}`}
-                    variant="top"
-                  />
-                ) : null}
-                <Card.Body>
-                  <Card.Title>{book.title}</Card.Title>
-                  <p className="small">Authors: {book.authors}</p>
-                  <Card.Text>{book.description}</Card.Text>
-                  <Button
-                    className="btn-block btn-danger"
-                    onClick={() => handleDeleteBook(book.bookId)}
-                  >
-                    Delete this Book!
-                  </Button>
-                </Card.Body>
-              </Card>
-            );
-          })}
-        </CardColumns>
-      </Container>
-    </>
-  );
+      </>
+    );
+  }
 };
 
 export default SavedBooks;
