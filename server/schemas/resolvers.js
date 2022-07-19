@@ -8,8 +8,6 @@ const resolvers = {
     me: async (parent, args, context) => {
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id });
-        //   .select('-__v -password')
-        //   .populate('savedBooks');
 
         return userData;
       }
@@ -56,11 +54,10 @@ const resolvers = {
       throw new AuthenticationError('You need to be logged in');
     },
 
-    removeBook: async (parent, { _id, bookId }, context) => {
-      console.log(_id, bookId);
+    removeBook: async (parent, { bookId }, context) => {
       if (context.user) {
         const removedbook = await User.findOneAndUpdate(
-          { _id: _id },
+          { _id: context.user._id },
           { $pull: { savedBooks: { bookId: bookId } } },
           { new: true }
         );
