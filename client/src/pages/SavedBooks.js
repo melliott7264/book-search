@@ -8,7 +8,7 @@ import {
 } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
-import { removeBookId } from '../utils/localStorage';
+import { removeBookId, saveBookIds } from '../utils/localStorage';
 import { useQuery, useMutation } from '@apollo/client';
 import { REMOVE_BOOK } from '../utils/mutations';
 import { GET_ME } from '../utils/queries';
@@ -24,8 +24,19 @@ const SavedBooks = () => {
   // runs once data has loaded
   useEffect(() => {
     const user = data?.me || {};
+    // sets UserData displaying saved book info for logged in user
     setUserData(user);
   }, [data]);
+
+  // checks to see if saved book info for logged in user has finished loading.
+  if (userData.savedBooks?.length) {
+    // Creates an array of saved bookIds from books saved to database for logged in user
+    const savedBooks = userData.savedBooks?.map((book) => {
+      return book.bookId;
+    });
+    // saves saved bookIds to localStorage for user session - used to display if book was saved in search results
+    saveBookIds(savedBooks);
+  }
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
@@ -75,7 +86,9 @@ const SavedBooks = () => {
                   />
                 ) : null}
                 <Card.Body>
-                  <Card.Title>{book.title}</Card.Title>
+                  <a href={`${book.link}`}>
+                    <Card.Title>{book.title}</Card.Title>
+                  </a>
                   <p className="small">Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
                   <Button
