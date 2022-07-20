@@ -1,5 +1,6 @@
 // use this to decode a token and get the user's information out of it
 import decode from 'jwt-decode';
+import { clearBookId } from './localStorage';
 
 // create a new class to instantiate for a user
 class AuthService {
@@ -35,12 +36,16 @@ class AuthService {
   login(idToken) {
     // Saves user token to localStorage
     localStorage.setItem('id_token', idToken);
+    // Clear any leftover saved books
+    clearBookId();
     window.location.assign('/');
   }
 
   logout() {
     // Clear user token and profile data from localStorage
     localStorage.removeItem('id_token');
+    // Clear any saved books
+    clearBookId();
     // this will reload the page and reset the state of the application
     window.location.assign('/');
   }

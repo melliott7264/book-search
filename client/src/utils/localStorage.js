@@ -23,8 +23,18 @@ export const removeBookId = (bookId) => {
     return false;
   }
 
-  const updatedSavedBookIds = savedBookIds?.filter((savedBookId) => savedBookId !== bookId);
+  const updatedSavedBookIds = savedBookIds?.filter(
+    (savedBookId) => savedBookId !== bookId
+  );
   localStorage.setItem('saved_books', JSON.stringify(updatedSavedBookIds));
 
+  return true;
+};
+
+export const clearBookId = () => {
+  // Clear saved books on logon/logoff
+  if (localStorage.getItem('saved_books')) {
+    localStorage.removeItem('saved_books');
+  }
   return true;
 };
