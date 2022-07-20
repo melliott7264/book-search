@@ -1,5 +1,7 @@
 const { gql } = require('apollo-server-express');
 
+// Mutation names and arguments (including types) must match contents of mutations file on front-end
+
 const typeDefs = gql`
   input BookInput {
     authors: [String]

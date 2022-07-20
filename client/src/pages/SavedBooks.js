@@ -7,7 +7,6 @@ import {
   Button,
 } from 'react-bootstrap';
 
-// import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 import { useQuery, useMutation } from '@apollo/client';
@@ -19,8 +18,10 @@ const SavedBooks = () => {
   const [deleteBook, { error }] = useMutation(REMOVE_BOOK);
 
   // use GraphQL query to get currently logged in user data
+  // Authentication info including user id is passed to GraphQL using context in the resolvers
   const { loading, data } = useQuery(GET_ME);
 
+  // runs once data has loaded
   useEffect(() => {
     const user = data?.me || {};
     setUserData(user);
@@ -34,7 +35,6 @@ const SavedBooks = () => {
       });
 
       if (response) {
-        // setUserData(response);
         // upon success, remove book's id from localStorage
         removeBookId(bookId);
       }
