@@ -2,7 +2,7 @@
 
 ## Description
 
-This is a refactor of a working Google Book Search API application to use GraphQL. The original application was built using React and a RESTful API on top of a Node.js/Express backend using a MongoDB database. Our task is to make the application more efficient with GraphQL and master GraphQL in the process.
+This is a refactor of a working Google Book Search API application to use GraphQL. The original application was built using React and a RESTful API on top of a Node.js/Express backend using a MongoDB database. Our task was to make the application more efficient with GraphQL and master GraphQL in the process. I wish I could say that I did master GraphQL, but at least, I have a better understanding of it in preparation for the next GraphQL project.
 
 ## Table of Contents (Optional)
 
@@ -17,13 +17,7 @@ There will be no user installation for this application. The completed refactor 
 
 ## Usage
 
-Provide instructions and examples for use. Include screenshots as needed.
-
-To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
-
-    ```md
-    ![alt text](assets/images/screenshot.png)
-    ```
+Refactor running on Heroku at: https://gentle-fjord-95460.herokuapp.com/. There is no functional change to this application. Only the front-end connection to the backend was changed. The application just supports a signup and login
 
 ## Credits
 
